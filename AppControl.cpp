@@ -100,7 +100,7 @@ void AppControl::displayTitleInit()
 
 void AppControl::displayMenuInit()
 {   
-    mlcd.clearDisplay();
+    mlcd.fillBackgroundWhite();			
     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
@@ -113,9 +113,43 @@ void AppControl::displayMenuInit()
 
 void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 {
-    focusChangeImg(MENU_WBGT, MENU_MUSIC);
-    focusChangeImg(MENU_MUSIC, MENU_MEASURE);
-    focusChangeImg(MENU_MEASURE,MENU_DATE);
+    if(current_state == MENU_WBGT){
+        mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
+    }
+    setFocusState(next_state);
+    if(current_state == MENU_WBGT && next_state == MENU_MUSIC){
+        mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
+    }
+    else if(current_state == MENU_WBGT && next_state == MENU_DATE){
+        mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH, MENU_DATE_X_CRD, MENU_DATE_Y_CRD); 
+        mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
+    }
+    else if(current_state == MENU_MUSIC && next_state == MENU_MEASURE){
+        mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
+    }
+    else if(current_state == MENU_MUSIC && next_state == MENU_WBGT){
+        mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
+    }
+    else if(current_state == MENU_MEASURE && next_state == MENU_DATE){
+        mlcd.displayJpgImageCoordinate(MENU_DATE_FOCUS_IMG_PATH, MENU_DATE_X_CRD, MENU_DATE_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
+    }
+    else if(current_state == MENU_MEASURE && next_state == MENU_MUSIC){
+        mlcd.displayJpgImageCoordinate(MENU_MUSIC_FOCUS_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_MEASURE_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
+    }
+    else if(current_state == MENU_DATE && next_state == MENU_WBGT){
+        mlcd.displayJpgImageCoordinate(MENU_WBGT_FOCUS_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH, MENU_DATE_X_CRD, MENU_DATE_Y_CRD);
+    }
+    else if(current_state == MENU_DATE && next_state == MENU_MEASURE){
+        mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
+        mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH, MENU_DATE_X_CRD, MENU_DATE_Y_CRD);
+    }
+       
 }
 
 void AppControl::displayWBGTInit()
@@ -175,7 +209,7 @@ void AppControl::controlApplication()
                 ** タイトル画面表示の関数はdisplayTitleInit()である。
                 ** この関数の中身はまだ何もないので、この関数にタイトル画面表示処理を書いてみよう。
                 */
-                //Serial.println("TITLE ENTRY");
+                Serial.println("TITLE ENTRY");
                 displayTitleInit();
                 setStateMachine(TITLE, DO);
 
@@ -183,39 +217,93 @@ void AppControl::controlApplication()
                 break;
 
             case DO:
+                Serial.println("TITLE DO");
                 if(m_flag_btnA_is_pressed == true || m_flag_btnB_is_pressed == true || m_flag_btnC_is_pressed == true){
                 setStateMachine(TITLE, EXIT); 
-             }
-                
-                
+            }
                 break;
 
             case EXIT:
+                Serial.println("TITLE EXIT");
                 setStateMachine(MENU, ENTRY); 
                 break;
 
             default:
                 break;
             }
-
+            setBtnAllFlgFalse();
             break;
 
         case MENU:
 
             switch (getAction()) {
             case ENTRY:
-                displayMenuInit(); 
+                Serial.println("MENU ENTRY");
+                displayMenuInit();
+                focusChangeImg(MENU_WBGT,MENU_WBGT);
+                setStateMachine(MENU, DO); 
                 break;
 
             case DO:
-
+            Serial.println("MENU DO");
+            if(m_flag_btnA_is_pressed == true){
+                if(getFocusState() == MENU_WBGT){
+                    focusChangeImg(MENU_WBGT, MENU_DATE);  
+                }
+                else if(getFocusState() == MENU_MUSIC){
+                    focusChangeImg(MENU_MUSIC, MENU_WBGT);     
+                }
+                else if(getFocusState() == MENU_MEASURE){
+                    focusChangeImg(MENU_MEASURE, MENU_MUSIC);
+                }
+                else if(getFocusState() == MENU_DATE){
+                    focusChangeImg(MENU_DATE, MENU_MEASURE);
+                }
+                setBtnAllFlgFalse();
+            }
+            else if(m_flag_btnC_is_pressed == true){
+                if(getFocusState() == MENU_WBGT){
+                    focusChangeImg(MENU_WBGT, MENU_MUSIC);
+                }
+                else if(getFocusState() == MENU_MUSIC){
+                    focusChangeImg(MENU_MUSIC, MENU_MEASURE);
+                }
+                else if(getFocusState() == MENU_MEASURE){
+                    focusChangeImg(MENU_MEASURE, MENU_DATE);
+                }
+                else if(getFocusState() == MENU_DATE){
+                    focusChangeImg(MENU_DATE, MENU_WBGT);
+                }
+                setBtnAllFlgFalse();
+            }
+            
+            else if(m_flag_btnB_is_pressed == true){
+                if(getFocusState() == MENU_WBGT){
+                    setStateMachine(WBGT, ENTRY);
+                }
+                else if(getFocusState() == MENU_MUSIC){
+                    setStateMachine(MUSIC_STOP, ENTRY);
+                }
+                else if(getFocusState() == MENU_MEASURE){
+                    setStateMachine(MEASURE, ENTRY);
+                }
+                else if(getFocusState() == MENU_DATE){
+                    setStateMachine(DATE, ENTRY);
+                }
+                
+            }
+            setBtnAllFlgFalse();
+            
+                //setStateMachine(MENU, EXIT);
                 break;
 
             case EXIT:
+            Serial.println("MENU EXIT");
+            //setStateMachine(WBGT, ENTRY);
 
             default:
                 break;
-            }
+        }
 
             break;
 
@@ -223,13 +311,16 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            Serial.println("WBGT ENTRY");
 
                 break;
 
             case DO:
+            Serial.println("WBGT DO");
                 break;
 
             case EXIT:
+            Serial.println("WBGT EXIT");
                 break;
 
             default:
@@ -241,12 +332,15 @@ void AppControl::controlApplication()
         case MUSIC_STOP:
             switch (getAction()) {
             case ENTRY:
+            Serial.println("MUSIC_STOP ENTRY");
                 break;
 
             case DO:
+            Serial.println("MUSIC_STOP DO");
                 break;
 
             case EXIT:
+            Serial.println("MUSIC_STOP EXIT");
                 break;
 
             default:
@@ -259,12 +353,15 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            Serial.println("MUSIC_PLAY ENTRY");
                 break;
 
             case DO:
+            Serial.println("MUSIC_PLAY DO");
                 break;
 
             case EXIT:
+            Serial.println("MUSIC_PLAY EXIT");
                 break;
 
             default:
@@ -277,12 +374,15 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            Serial.println("MEASURE ENTRY");
                 break;
 
             case DO:
+            Serial.println("MEASURE DO");
                 break;
 
             case EXIT:
+            Serial.println("MEASURE EXIT");
                 break;
 
             default:
@@ -295,12 +395,15 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            Serial.println("DATE ENTRY");
                 break;
 
             case DO:
+            Serial.println("DATE DO");
                 break;
 
             case EXIT:
+            Serial.println("DATE EXIT");
                 break;
 
             default:
