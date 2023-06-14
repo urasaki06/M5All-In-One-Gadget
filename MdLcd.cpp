@@ -1,6 +1,8 @@
 #include "MdLcd.h"
 #include <M5Stack.h>
 
+
+
 void MdLcd::displayJpgImage(const char* path)
 {
     M5.Lcd.drawJpgFile(SD, path);

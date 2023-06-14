@@ -154,10 +154,24 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 
 void AppControl::displayWBGTInit()
 {
+    
 }
 
 void AppControl::displayTempHumiIndex()
 {
+    Serial.println("WBGT ENTRY");
+    mwbgt.init();
+    double temp = 0;
+    double hum = 0;
+    WbgtIndex ind = SAFE;
+    mwbgt.getWBGT((double*)&temp, (double*)&hum, (WbgtIndex*)&ind);
+    Serial.print(temp);
+    Serial.println("[℃]");
+    Serial.print(hum);
+    Serial.println("[%]");
+    Serial.print(ind);
+    Serial.println("[アラート]");
+
 }
 
 void AppControl::displayMusicInit()
@@ -198,6 +212,8 @@ void AppControl::displayDateUpdate()
 
 void AppControl::controlApplication()
 {
+    mmplay.init();
+
     while (1) {
 
         switch (getState()) {
@@ -299,7 +315,7 @@ void AppControl::controlApplication()
 
             case EXIT:
             Serial.println("MENU EXIT");
-            //setStateMachine(WBGT, ENTRY);
+            setStateMachine(WBGT, ENTRY);
 
             default:
                 break;
@@ -311,8 +327,7 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
-            Serial.println("WBGT ENTRY");
-
+            displayTempHumiIndex();
                 break;
 
             case DO:
