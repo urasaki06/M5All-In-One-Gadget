@@ -100,6 +100,7 @@ void AppControl::displayTitleInit()
 
 void AppControl::displayMenuInit()
 {   
+    mlcd.clearDisplay();
     mlcd.fillBackgroundWhite();			
     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
@@ -152,17 +153,24 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
        
 }
 
+/*熱中症モニタの画面を描画し、 関数 displayTempHumiIndex()を呼び出す	*/
 void AppControl::displayWBGTInit()
 {
-    
+    mlcd.fillBackgroundWhite();	
+    displayTempHumiIndex();	
+    mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH, WBGT_TEMPERATURE_X_CRD, WBGT_TEMPERATURE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH, WBGT_HUMIDITY_X_CRD, WBGT_HUMIDITY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_DEGREE_IMG_PATH, WBGT_DEGREE_X_CRD, WBGT_DEGREE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(WBGT_PERCENT_IMG_PATH, WBGT_PERCENT_X_CRD, WBGT_PERCENT_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, WBGT_BACK_X_CRD, WBGT_BACK_Y_CRD);	    
 }
 
 void AppControl::displayTempHumiIndex()
 {
     Serial.println("WBGT ENTRY");
     mwbgt.init();
-    double temp = 0;
-    double hum = 0;
+    double temp = 0.0;
+    double hum = 0.0;
     WbgtIndex ind = SAFE;
     mwbgt.getWBGT((double*)&temp, (double*)&hum, (WbgtIndex*)&ind);
     Serial.print(temp);
@@ -172,7 +180,64 @@ void AppControl::displayTempHumiIndex()
     Serial.print(ind);
     Serial.println("[アラート]");
 
+    /*温度を1つずつ取り出す 二桁目*/
+    int t2DIGIT = temp / 10;
+    mlcd.displayJpgImageCoordinate(g_str_orange[t2DIGIT], WBGT_T2DIGIT_X_CRD, WBGT_T2DIGIT_Y_CRD);
+    
+    /*温度を取り出す　一桁目*/
+    int t1DIGIT = (int)temp % 10;
+    mlcd.displayJpgImageCoordinate(g_str_orange[t1DIGIT], WBGT_T1DIGIT_X_CRD, WBGT_T1DIGIT_Y_CRD);
+
+    /*ドット*/
+    mlcd.displayJpgImageCoordinate(COMMON_ORANGEDOT_IMG_PATH, WBGT_TDOT_X_CRD, WBGT_TDOT_Y_CRD);
+
+    /* 温度の小数部分を取得 */
+    int tempDec = (int)(temp * 10) % 10;
+    mlcd.displayJpgImageCoordinate(g_str_orange[tempDec], WBGT_T1DECIMAL_X_CRD, WBGT_T1DECIMAL_Y_CRD);
+    /* 二桁目の数字がない場合は白塗りの画像を表示 */
+    if(t2DIGIT == 0 ){
+    mlcd.displayJpgImageCoordinate(COMMON_ORANGEFILLWHITE_IMG_PATH, WBGT_T2DIGIT_X_CRD, WBGT_T2DIGIT_Y_CRD);
+    }
+
+    /*湿度を1つずつ取り出す　二桁目*/
+    int h2DIGIT = hum /10;
+    mlcd.displayJpgImageCoordinate(g_str_blue[h2DIGIT], WBGT_H2DIGIT_X_CRD, WBGT_H2DIGIT_Y_CRD);
+
+    /*条件式を書く　湿度を取り出す　一桁目*/
+    int h1DIGIT = (int)hum % 10;
+    mlcd.displayJpgImageCoordinate(g_str_blue[h1DIGIT], WBGT_H1DIGIT_X_CRD, WBGT_H1DIGIT_Y_CRD);
+
+     /*ドット*/
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEDOT_IMG_PATH, WBGT_HDOT_X_CRD, WBGT_HDOT_Y_CRD);
+
+
+ /* 湿度の小数部分を取得 */
+    int humDec = (int)(hum * 10) % 10;
+     mlcd.displayJpgImageCoordinate(g_str_blue[humDec], WBGT_H1DECIMAL_X_CRD, WBGT_H1DECIMAL_Y_CRD);
+
+    /* 二桁目の数字がない場合は白塗りの画像を表示 */
+    if(h2DIGIT == 0 ){
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEFILLWHITE_IMG_PATH, WBGT_H2DIGIT_X_CRD, WBGT_H2DIGIT_Y_CRD);
+    }
+/*条件式を書く　アラート*/
+    if(ind == SAFE){
+        mlcd.displayJpgImageCoordinate(WBGT_SAFE_IMG_PATH, WBGT_NOTICE_X_CRD, WBGT_NOTICE_Y_CRD);
+    }
+    else if(ind == ATTENTION){
+        mlcd.displayJpgImageCoordinate(WBGT_ATTENTION_IMG_PATH, WBGT_NOTICE_X_CRD, WBGT_NOTICE_Y_CRD);
+    }
+    else if(ind == ALERT){
+        mlcd.displayJpgImageCoordinate(WBGT_ALERT_IMG_PATH, WBGT_NOTICE_X_CRD, WBGT_NOTICE_Y_CRD);
+    }  
+    else if(ind == HIGH_ALERT){
+    mlcd.displayJpgImageCoordinate(WBGT_HIGH_ALERT_IMG_PATH, WBGT_NOTICE_X_CRD, WBGT_NOTICE_Y_CRD); 
+    }
+    else{
+    mlcd.displayJpgImageCoordinate(WBGT_DANGER_IMG_PATH, WBGT_NOTICE_X_CRD, WBGT_NOTICE_Y_CRD);
+    }
+    delay(100);
 }
+
 
 void AppControl::displayMusicInit()
 {
@@ -327,11 +392,20 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            displayWBGTInit();
             displayTempHumiIndex();
+            setStateMachine(WBGT, DO);
                 break;
 
             case DO:
             Serial.println("WBGT DO");
+            displayTempHumiIndex();
+            if(m_flag_btnB_is_pressed == true){
+                displayMenuInit();
+                focusChangeImg(MENU_WBGT,MENU_WBGT);
+                setStateMachine(MENU, DO);
+            }
+            setBtnAllFlgFalse();
                 break;
 
             case EXIT:
