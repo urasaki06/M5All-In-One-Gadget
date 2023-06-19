@@ -111,7 +111,7 @@ void AppControl::displayMenuInit()
     mlcd.displayJpgImageCoordinate(COMMON_BUTTON_DOWN_IMG_PATH, COMMON_BUTTON_DOWN_X_CRD , COMMON_BUTTON_DOWN_Y_CRD);
 }
 
-
+/*-----------------------------------------------------------------*/
 void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 {
     if(current_state == MENU_WBGT){
@@ -152,11 +152,10 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
     }
        
 }
-
+/*-----------------------------------------------------------------------*/
 /*熱中症モニタの画面を描画し、 関数 displayTempHumiIndex()を呼び出す	*/
 void AppControl::displayWBGTInit()
 {
-    mlcd.fillBackgroundWhite();	
     displayTempHumiIndex();	
     mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH, WBGT_TEMPERATURE_X_CRD, WBGT_TEMPERATURE_Y_CRD);
     mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH, WBGT_HUMIDITY_X_CRD, WBGT_HUMIDITY_Y_CRD);
@@ -237,28 +236,47 @@ void AppControl::displayTempHumiIndex()
     }
     delay(100);
 }
-
-
+/*--------------------------------------------------------------*/
+/*音楽停止画面を描画し、displayMusicTitle()を呼出して音楽ファイルのファイル名を描画する。*/
 void AppControl::displayMusicInit()
 {
+    mlcd.fillBackgroundWhite();
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH, MUSIC_NOTICE_X_CRD, MUSIC_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH, MUSIC_PLAY_X_CRD, MUSIC_PLAY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, MUSIC_BACK_X_CRD, MUSIC_BACK_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH, MUSIC_NEXT_X_CRD, MUSIC_NEXT_Y_CRD);
+    displayMusicTitle();
 }
-
+/*音楽停止画面を描画する*/
 void AppControl::displayMusicStop()
 {
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWSTOPPING_IMG_PATH, MUSIC_NOTICE_X_CRD, MUSIC_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_PLAY_IMG_PATH, MUSIC_PLAY_X_CRD, MUSIC_PLAY_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, MUSIC_BACK_X_CRD, MUSIC_BACK_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_NEXT_IMG_PATH, MUSIC_NEXT_X_CRD, MUSIC_NEXT_Y_CRD);
+    displayMusicTitle();
 }
-
+/*関数 MdMusicPlayer::getTitle()により音楽ファイルのファイル名を取得し、それを描画する*/
 void AppControl::displayMusicTitle()
 {
+    mmplay.getTitle();
+    mlcd.displayText(mmplay.getTitle(), MUSIC_TITLE_X_CRD, MUSIC_TITLE_Y_CRD);			
 }
-
+/*関数 MdMusicPlayer::selectNextMusic()により次の音楽ファイルを開き、displayMusicTitle()でそのファイル名を描画する*/
 void AppControl::displayNextMusic()
 {
+    mmplay.selectNextMusic();
+    displayMusicTitle();
 }
 
+/*音楽再生画面を描画する*/
 void AppControl::displayMusicPlay()
 {
+    mlcd.displayJpgImageCoordinate(MUSIC_NOWPLAYING_IMG_PATH, MUSIC_NOTICE_X_CRD, MUSIC_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_STOP_IMG_PATH, MUSIC_PLAY_X_CRD, MUSIC_PLAY_Y_CRD);
+    displayMusicTitle();
 }
-
+/*-------------------------------------------------------------*/
 void AppControl::displayMeasureInit()
 {
 }
@@ -401,15 +419,16 @@ void AppControl::controlApplication()
             Serial.println("WBGT DO");
             displayTempHumiIndex();
             if(m_flag_btnB_is_pressed == true){
-                displayMenuInit();
                 focusChangeImg(MENU_WBGT,MENU_WBGT);
-                setStateMachine(MENU, DO);
+                setStateMachine(WBGT, EXIT);
             }
             setBtnAllFlgFalse();
                 break;
 
             case EXIT:
             Serial.println("WBGT EXIT");
+            setStateMachine(MENU, ENTRY);
+            
                 break;
 
             default:
@@ -422,14 +441,39 @@ void AppControl::controlApplication()
             switch (getAction()) {
             case ENTRY:
             Serial.println("MUSIC_STOP ENTRY");
+            displayMusicInit();
+            setStateMachine(MUSIC_STOP, DO);
                 break;
 
             case DO:
             Serial.println("MUSIC_STOP DO");
+            if(m_flag_btnA_is_pressed == false || m_flag_btnB_is_pressed == false || m_flag_btnC_is_pressed == false){
+            setStateMachine(MUSIC_STOP, DO);
+            }
+            
+            if(m_flag_btnA_is_pressed == true){
+                Serial.println("test1");
+                setStateMachine(MUSIC_PLAY, ENTRY);
+                Serial.println("test2");
+            }
+            else if(m_flag_btnB_is_pressed == true){
+                Serial.println("test3");
+                setStateMachine(MENU, ENTRY);
+                Serial.println("test4");
+            }
+            else if(m_flag_btnC_is_pressed == true){
+                Serial.println("test5");
+                displayNextMusic();
+                Serial.println("test6");
+            }
+            setBtnAllFlgFalse();
+            Serial.println("test7");
+
                 break;
 
             case EXIT:
             Serial.println("MUSIC_STOP EXIT");
+    
                 break;
 
             default:
@@ -442,15 +486,29 @@ void AppControl::controlApplication()
 
             switch (getAction()) {
             case ENTRY:
+            Serial.println("再生中");
             Serial.println("MUSIC_PLAY ENTRY");
+            mmplay.prepareMP3();
+            setStateMachine(MUSIC_PLAY, DO);
+            Serial.println("再生中test1");
                 break;
 
             case DO:
             Serial.println("MUSIC_PLAY DO");
+            displayMusicPlay();
+            while(mmplay.playMP3() && m_flag_btnA_is_pressed == false){}
+            Serial.println("再生中test2");
+            mmplay.stopMP3();
+            displayMusicStop();
+            Serial.println("再生中test3");
+            setBtnAllFlgFalse();
+            setStateMachine(MUSIC_PLAY, EXIT);
+            
                 break;
 
-            case EXIT:
+        case EXIT:
             Serial.println("MUSIC_PLAY EXIT");
+            setStateMachine(MUSIC_STOP,ENTRY);
                 break;
 
             default:
