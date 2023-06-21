@@ -573,12 +573,13 @@ void AppControl::controlApplication()
             case ENTRY:
             Serial.println("MEASURE ENTRY");
             displayMeasureInit();
-            displayMeasureDistance();
+            
             setStateMachine(MEASURE, DO);
                 break;
 
             case DO:
             Serial.println("MEASURE DO");
+            displayMeasureDistance();
             delay(250);
             if(m_flag_btnB_is_pressed == true){
                 setStateMachine(MEASURE, EXIT);
