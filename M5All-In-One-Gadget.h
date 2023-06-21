@@ -142,12 +142,39 @@
 #define MUSIC_STOP_Y_CRD 200	
 
 // Measure jpg image coordinate
-
-
-
-
+#define MEASURE_NOTICE_X_CRD 0	
+#define MEASURE_NOTICE_Y_CRD 0			
+#define MEASURE_DIGIT3_X_CRD 10		
+#define MEASURE_DIGIT3_Y_CRD 100			
+#define MEASURE_DIGIT2_X_CRD 53		
+#define MEASURE_DIGIT2_Y_CRD 100			
+#define MEASURE_DIGIT1_X_CRD 96			
+#define MEASURE_DIGIT1_Y_CRD 100			
+#define MEASURE_DOT_X_CRD 139			
+#define MEASURE_DOT_Y_CRD 100			
+#define MEASURE_DECIMAL_X_CRD 182			
+#define MEASURE_DECIMAL_Y_CRD 100			
+#define MEASURE_CM_X_CRD 240		
+#define MEASURE_CM_Y_CRD 100			
+#define MEASURE_BACK_X_CRD 120		
+#define MEASURE_BACK_Y_CRD 200		
 
 // Date jpg image coordinate
+#define DATE_NOTICE_X_CRD		//時刻表示画面の「時刻表示」画像のx座標	
+#define DATE_NOTICE_Y_CRD		//時刻表示画面の「時刻表示」画像のy座標	
+#define DATE_YYYYMMDD_X_CRD		//時刻表示画面の「日付」のx座標	
+#define DATE_YYYYMMDD_Y_CRD		//時刻表示画面の「日付」のy座標	
+#define DATE_HHmmSS_X_CRD		//時刻表示画面の「時刻」のx座標	
+#define DATE_HHmmSS_Y_CRD		//時刻表示画面の「時刻」のy座標	
+#define DATE_BACK_X_CRD		//時刻表示画面の「戻るボタン」画像のx座標	
+#define DATE_BACK_Y_CRD		//時刻表示画面の「戻るボタン」画像のy座標	
+
+
+
+
+
+
+
 
 typedef enum {
     TITLE,

@@ -100,7 +100,6 @@ void AppControl::displayTitleInit()
 
 void AppControl::displayMenuInit()
 {   
-    mlcd.clearDisplay();
     mlcd.fillBackgroundWhite();			
     mlcd.displayJpgImageCoordinate(MENU_WBGT_IMG_PATH, MENU_WBGT_X_CRD, MENU_WBGT_Y_CRD);
     mlcd.displayJpgImageCoordinate(MENU_MUSIC_IMG_PATH, MENU_MUSIC_X_CRD, MENU_MUSIC_Y_CRD);
@@ -156,6 +155,7 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
 /*熱中症モニタの画面を描画し、 関数 displayTempHumiIndex()を呼び出す	*/
 void AppControl::displayWBGTInit()
 {
+    mlcd.fillBackgroundWhite();
     displayTempHumiIndex();	
     mlcd.displayJpgImageCoordinate(WBGT_TEMPERATURE_IMG_PATH, WBGT_TEMPERATURE_X_CRD, WBGT_TEMPERATURE_Y_CRD);
     mlcd.displayJpgImageCoordinate(WBGT_HUMIDITY_IMG_PATH, WBGT_HUMIDITY_X_CRD, WBGT_HUMIDITY_Y_CRD);
@@ -277,14 +277,55 @@ void AppControl::displayMusicPlay()
     displayMusicTitle();
 }
 /*-------------------------------------------------------------*/
+/*距離測定画面の初期画面を描画する。
+関数 displayMeasureDistance()を呼出し現在の測定距離を描画する*/
 void AppControl::displayMeasureInit()
 {
+    mlcd.fillBackgroundWhite();
+    displayMeasureDistance();
+    mlcd.displayJpgImageCoordinate(MEASURE_NOTICE_IMG_PATH, MEASURE_NOTICE_X_CRD, MEASURE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(MEASURE_CM_IMG_PATH, MEASURE_CM_X_CRD, MEASURE_CM_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, MEASURE_BACK_X_CRD, MEASURE_BACK_Y_CRD);
+   
 }
-
+/*関数 MdMeasureDistance::getDistance() で距離を取得し、その値を描画する*/
 void AppControl::displayMeasureDistance()
 {
-}
+    double distance = mmdist.getDistance();
+    Serial.print(distance);
+    Serial.println("[cm]");
+    /*距離の百の位の数字を取り出す*/
+    int DIGIT3 = (int)distance /100;
+     if(DIGIT3 == 0 ){
+        mlcd.displayJpgImageCoordinate(COMMON_BLUEFILLWHITE_IMG_PATH, MEASURE_DIGIT3_X_CRD, MEASURE_DIGIT3_Y_CRD);
+    }
+    else{
+        mlcd.displayJpgImageCoordinate(g_str_blue[DIGIT3], MEASURE_DIGIT3_X_CRD, MEASURE_DIGIT3_Y_CRD);
+    }
 
+     /*距離の十の位の数字を取り出す*/
+    int DIGIT2 =  (int)distance / 10;
+    if(DIGIT2 == 0 ){
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEFILLWHITE_IMG_PATH, MEASURE_DIGIT2_X_CRD, MEASURE_DIGIT2_Y_CRD);
+    }
+    else{
+    mlcd.displayJpgImageCoordinate(g_str_blue[DIGIT2], MEASURE_DIGIT2_X_CRD, MEASURE_DIGIT2_Y_CRD);
+    }
+    /*距離の一の位の数字を取り出す*/
+    int DIGIT1 = (int)distance % 10;
+    mlcd.displayJpgImageCoordinate(g_str_blue[DIGIT1], MEASURE_DIGIT1_X_CRD, MEASURE_DIGIT1_Y_CRD);
+
+    /*ドット*/
+    mlcd.displayJpgImageCoordinate(COMMON_BLUEDOT_IMG_PATH, MEASURE_DOT_X_CRD, MEASURE_DOT_Y_CRD);
+
+    /* 距離の小数部分を取得 */
+    int disDec = (int)distance % 10;
+    mlcd.displayJpgImageCoordinate(g_str_blue[disDec], MEASURE_DECIMAL_X_CRD, MEASURE_DECIMAL_Y_CRD);
+    
+   
+    
+}
+/*-------------------------------------------------------------*/
 void AppControl::displayDateInit()
 {
 }
@@ -332,7 +373,7 @@ void AppControl::controlApplication()
             }
             setBtnAllFlgFalse();
             break;
-
+/*------------------------------------------------------------*/
         case MENU:
 
             switch (getAction()) {
@@ -405,7 +446,7 @@ void AppControl::controlApplication()
         }
 
             break;
-
+/*-----------------------------------------------------*/
         case WBGT:
 
             switch (getAction()) {
@@ -436,7 +477,7 @@ void AppControl::controlApplication()
             }
 
             break;
-
+/*-------------------------------------------------------------------*/
         case MUSIC_STOP:
             switch (getAction()) {
             case ENTRY:
@@ -481,7 +522,7 @@ void AppControl::controlApplication()
             }
 
             break;
-
+/*-----------------------------------------------------------------*/
         case MUSIC_PLAY:
 
             switch (getAction()) {
@@ -516,20 +557,29 @@ void AppControl::controlApplication()
             }
 
             break;
-
+/*----------------------------------------------------------------*/
         case MEASURE:
 
             switch (getAction()) {
             case ENTRY:
             Serial.println("MEASURE ENTRY");
+            displayMeasureInit();
+            setStateMachine(MEASURE, DO);
                 break;
 
             case DO:
             Serial.println("MEASURE DO");
+            displayMeasureDistance();
+            delay(250);
+            if(m_flag_btnB_is_pressed == true){
+                setStateMachine(MEASURE, EXIT);
+            }
+            setBtnAllFlgFalse();
                 break;
 
             case EXIT:
             Serial.println("MEASURE EXIT");
+            setStateMachine(MENU, ENTRY);
                 break;
 
             default:
@@ -537,7 +587,7 @@ void AppControl::controlApplication()
             }
 
             break;
-
+/*----------------------------------------------------------------*/
         case DATE:
 
             switch (getAction()) {
