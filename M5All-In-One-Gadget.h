@@ -160,14 +160,14 @@
 #define MEASURE_BACK_Y_CRD 200		
 
 // Date jpg image coordinate
-#define DATE_NOTICE_X_CRD		//時刻表示画面の「時刻表示」画像のx座標	
-#define DATE_NOTICE_Y_CRD		//時刻表示画面の「時刻表示」画像のy座標	
-#define DATE_YYYYMMDD_X_CRD		//時刻表示画面の「日付」のx座標	
-#define DATE_YYYYMMDD_Y_CRD		//時刻表示画面の「日付」のy座標	
-#define DATE_HHmmSS_X_CRD		//時刻表示画面の「時刻」のx座標	
-#define DATE_HHmmSS_Y_CRD		//時刻表示画面の「時刻」のy座標	
-#define DATE_BACK_X_CRD		//時刻表示画面の「戻るボタン」画像のx座標	
-#define DATE_BACK_Y_CRD		//時刻表示画面の「戻るボタン」画像のy座標	
+#define DATE_NOTICE_X_CRD 0	//時刻表示画面の「時刻表示」画像のx座標	
+#define DATE_NOTICE_Y_CRD 0		//時刻表示画面の「時刻表示」画像のy座標	
+#define DATE_YYYYMMDD_X_CRD 10	//時刻表示画面の「日付」のx座標	
+#define DATE_YYYYMMDD_Y_CRD 100	//時刻表示画面の「日付」のy座標	
+#define DATE_HHmmSS_X_CRD 40		//時刻表示画面の「時刻」のx座標	
+#define DATE_HHmmSS_Y_CRD 150		//時刻表示画面の「時刻」のy座標	
+#define DATE_BACK_X_CRD 120		//時刻表示画面の「戻るボタン」画像のx座標	
+#define DATE_BACK_Y_CRD 200		//時刻表示画面の「戻るボタン」画像のy座標	
 
 
 

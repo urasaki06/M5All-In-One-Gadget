@@ -321,19 +321,28 @@ void AppControl::displayMeasureDistance()
     /* 距離の小数部分を取得 */
     int disDec = (int)distance % 10;
     mlcd.displayJpgImageCoordinate(g_str_blue[disDec], MEASURE_DECIMAL_X_CRD, MEASURE_DECIMAL_Y_CRD);
-    
-   
-    
 }
-/*-------------------------------------------------------------*/
+/*-----------------------------------------------------------------*/
+/*時刻表示画面の初期画面を描画する。関数 displayDateUpdate() で現在日時を描画する。*/
 void AppControl::displayDateInit()
 {
+    mlcd.fillBackgroundWhite();
+    displayDateUpdate();
+    mlcd.displayJpgImageCoordinate(DATE_NOTICE_IMG_PATH, DATE_NOTICE_X_CRD, DATE_NOTICE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(DATE_SLASH_IMG_PATH, DATE_YYYYMMDD_X_CRD, DATE_YYYYMMDD_Y_CRD);
+    mlcd.displayJpgImageCoordinate(DATE_COLON_IMG_PATH, DATE_HHmmSS_X_CRD, DATE_HHmmSS_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, DATE_BACK_X_CRD, DATE_BACK_Y_CRD);
 }
-
+/*関数 MdDateTime::readDate()とMdDateTime::readTime()により現在の日時を取得し、描画する*/
 void AppControl::displayDateUpdate()
 {
+    mdtime.readDate();
+    mdtime.MdDateTime::readTime();
+    mlcd.displayDateText(mdtime.readDate(),DATE_YYYYMMDD_X_CRD, DATE_YYYYMMDD_Y_CRD );
+    mlcd.displayDateText(mdtime.MdDateTime::readTime(), DATE_HHmmSS_X_CRD, DATE_HHmmSS_Y_CRD );
+    delay(100);
 }
-
+/*------------------------------------------------------------------*/
 void AppControl::controlApplication()
 {
     mmplay.init();
@@ -564,12 +573,12 @@ void AppControl::controlApplication()
             case ENTRY:
             Serial.println("MEASURE ENTRY");
             displayMeasureInit();
+            displayMeasureDistance();
             setStateMachine(MEASURE, DO);
                 break;
 
             case DO:
             Serial.println("MEASURE DO");
-            displayMeasureDistance();
             delay(250);
             if(m_flag_btnB_is_pressed == true){
                 setStateMachine(MEASURE, EXIT);
@@ -593,14 +602,22 @@ void AppControl::controlApplication()
             switch (getAction()) {
             case ENTRY:
             Serial.println("DATE ENTRY");
+            displayDateInit();
+            setStateMachine(DATE, DO);
                 break;
 
             case DO:
             Serial.println("DATE DO");
+            displayDateUpdate();
+             if(m_flag_btnB_is_pressed == true){
+                setStateMachine(DATE, EXIT);
+            }
+            setBtnAllFlgFalse();
                 break;
 
             case EXIT:
             Serial.println("DATE EXIT");
+            setStateMachine(MENU, ENTRY);
                 break;
 
             default:
