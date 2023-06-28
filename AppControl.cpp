@@ -1,6 +1,7 @@
 #include "AppControl.h"
 #include <Arduino.h>
 #include <M5Stack.h>
+#include <stdlib.h>
 
 MdLcd mlcd;
 MdWBGTMonitor mwbgt;
@@ -33,6 +34,30 @@ const char* g_str_blue[] = {
     COMMON_BLUE7_IMG_PATH,
     COMMON_BLUE8_IMG_PATH,
     COMMON_BLUE9_IMG_PATH,
+};
+
+const char* g_str_heart [] = {
+    TRUMP_HEART1_IMG_PATH,
+    TRUMP_HEART2_IMG_PATH,
+    TRUMP_HEART3_IMG_PATH,
+    TRUMP_HEART4_IMG_PATH,
+    TRUMP_HEART5_IMG_PATH,
+    TRUMP_HEART6_IMG_PATH,
+    TRUMP_HEART7_IMG_PATH,
+    TRUMP_HEART8_IMG_PATH,
+    TRUMP_HEART9_IMG_PATH,
+};
+
+const char* g_str_spade [] = {
+    TRUMP_SPADE1_IMG_PATH,
+    TRUMP_SPADE2_IMG_PATH,
+    TRUMP_SPADE3_IMG_PATH,
+    TRUMP_SPADE4_IMG_PATH,
+    TRUMP_SPADE5_IMG_PATH,
+    TRUMP_SPADE6_IMG_PATH,
+    TRUMP_SPADE7_IMG_PATH,
+    TRUMP_SPADE8_IMG_PATH,
+    TRUMP_SPADE9_IMG_PATH,
 };
 
 void AppControl::setBtnAFlg(bool flg)
@@ -149,7 +174,6 @@ void AppControl::focusChangeImg(FocusState current_state, FocusState next_state)
         mlcd.displayJpgImageCoordinate(MENU_MEASURE_FOCUS_IMG_PATH, MENU_MEASURE_X_CRD, MENU_MEASURE_Y_CRD);
         mlcd.displayJpgImageCoordinate(MENU_DATE_IMG_PATH, MENU_DATE_X_CRD, MENU_DATE_Y_CRD);
     }
-       
 }
 /*-----------------------------------------------------------------------*/
 /*熱中症モニタの画面を描画し、 関数 displayTempHumiIndex()を呼び出す	*/
@@ -343,10 +367,104 @@ void AppControl::displayDateUpdate()
     delay(100);
 }
 /*------------------------------------------------------------------*/
+/*HIGH_AND_LOW画面のタイトル（初期画面）を描画する*/
+void AppControl::displayHigh_low_Init()
+{
+    mlcd.fillBackgroundWhite();
+    mlcd.displayJpgImageCoordinate(TRUMP_TITLE_IMG_PATH, TRUMP_TITLE_X_CRD, TRUMP_TITLE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_START_IMG_PATH, TRUMP_START_X_CRD, TRUMP_START_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, TRUMP_COMMON_BUTTON_BACK_X_CRD, TRUMP_COMMON_BUTTON_BACK_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_RECORD_IMG_PATH, TRUMP_RECORD_X_CRD, TRUMP_RECORD_Y_CRD);
+
+}
+/*-----------------------------------------------------------------*/
+/*HEART(左)トランプをランダムに表示*/
+int AppControl::getHigh_low_heart()
+{
+    int leftCard;
+	//左用ランダム数値の取得表示
+    leftCard = rand() % 9 + 1;
+    return leftCard;
+}
+/*-------------------------------------------------------------------------------*/
+/*SPADEトランプをランダムに表示*/
+int AppControl::getHigh_low_spade()
+{
+    getHigh_low_heart();
+    int rightCard ;
+    do {
+	rightCard = rand() % 9 + 1;
+	} while (leftCard == rightCard);
+    return rightCard;
+}
+/*--------------------------------------------------------------------------------*/
+/*HIGH_AND_LOW画面のバトル画面(選択)を描画する*/
+void AppControl::displayHigh_low_select()
+{
+    mlcd.fillBackgroundWhite();
+    leftCard = getHigh_low_heart();
+    mlcd.displayJpgImageCoordinate(TRUMP_BACK_IMG_PATH, TRUMP_BACK_X_CRD, TRUMP_BACK_Y_CRD);
+    mlcd.displayJpgImageCoordinate(g_str_heart[leftCard], TRUMP_HEART_X_CRD, TRUMP_HEART_Y_CRD );
+    mlcd.displayJpgImageCoordinate(TRUMP_HIGHANDLOW_IMG_PATH, TRUMP_HIGHANDLOW_X_CRD, TRUMP_HIGHANDLOW_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_HIGH_IMG_PATH, TRUMP_HIGH_X_CRD, TRUMP_HIGH_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_LOW_IMG_PATH, TRUMP_LOW_X_CRD, TRUMP_LOW_Y_CRD);
+}
+/*--------------------------------------------------------------------------------*/
+int AppControl::getHigh_lose_win(bool selectbtn)
+{
+    int rightCard = getHigh_low_spade();
+	bool result ;
+    
+    //勝敗判断
+    if (leftCard < rightCard) {
+		result = true;
+	}
+	else if (leftCard > rightCard) {
+		result = false;
+	}
+	else {
+		// ここに来ることはありえないが念のため記述
+		result = true;
+	}
+    return result;
+}
+/*---------------------------------------------------------------------------------------------------*/
+    /*もしHEART(左)のカードよりSPADE(右)のカードのほうがHIGHであれば”勝利”を,HEART(左)のカードよりSPADE(右)のカードのほうがLOWであれば”敗北”を描画する*/
+int AppControl::displayHigh_low_result()
+{
+    getHigh_lose_win(result);
+    if (result == true) {
+    mlcd.fillBackgroundWhite();
+    mlcd.displayJpgImageCoordinate(g_str_spade[rightCard], TRUMP_SPADE_X_CRD, TRUMP_SPADE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(g_str_heart[leftCard], TRUMP_HEART_X_CRD, TRUMP_HEART_Y_CRD );
+    mlcd.displayJpgImageCoordinate(TRUMP_WIN_IMG_PATH, TRUMP_WIN_X_CRD, TRUMP_WIN_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_ONMORE_IMG_PATH, TRUMP_ONMORE_X_CRD, TRUMP_ONMORE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, TRUMP_COMMON_BUTTON_BACK_X_CRD, TRUMP_COMMON_BUTTON_BACK_Y_CRD);
+    }
+    else{
+    mlcd.fillBackgroundWhite();
+    mlcd.displayJpgImageCoordinate(g_str_spade[rightCard], TRUMP_SPADE_X_CRD, TRUMP_SPADE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(g_str_heart[leftCard], TRUMP_HEART_X_CRD, TRUMP_HEART_Y_CRD );
+    mlcd.displayJpgImageCoordinate(TRUMP_LOSE_IMG_PATH, TRUMP_LOSE_X_CRD, TRUMP_LOSE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(TRUMP_ONMORE_IMG_PATH, TRUMP_ONMORE_X_CRD, TRUMP_ONMORE_Y_CRD);
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, TRUMP_COMMON_BUTTON_BACK_X_CRD, TRUMP_COMMON_BUTTON_BACK_Y_CRD);
+    }
+    return 0;
+ 
+}
+/*-------------------------------------------------------------------------------------------------------*/
+/*HIGH_AND_LOW画面のバトル画面(戦績)を描画する*/
+void AppControl::displayHigh_low_record()
+{
+    mlcd.displayJpgImageCoordinate(COMMON_BUTTON_BACK_IMG_PATH, TRUMP_COMMON_BUTTON_BACK_X_CRD, TRUMP_COMMON_BUTTON_BACK_Y_CRD);
+}
+
+/*------------------------------------------------------------------*/
 void AppControl::controlApplication()
 {
     mmplay.init();
-
+    bool userSelect;
+    bool result;
     while (1) {
 
         switch (getState()) {
@@ -374,7 +492,8 @@ void AppControl::controlApplication()
 
             case EXIT:
                 Serial.println("TITLE EXIT");
-                setStateMachine(MENU, ENTRY); 
+                //setStateMachine(MENU, ENTRY); 
+                setStateMachine(BATTLE_TITLE, ENTRY);  
                 break;
 
             default:
@@ -625,8 +744,140 @@ void AppControl::controlApplication()
                 break;
             }
 
-        default:
             break;
+/*------------------------------------------------------*/
+        case BATTLE_TITLE:
+            switch (getAction()) {
+            case ENTRY:
+            setStateMachine(BATTLE_TITLE, DO);
+            displayHigh_low_Init();
+            break;
+
+            case DO:
+            Serial.println("BATTLE_TITLE DO");
+            if (m_flag_btnA_is_pressed == true) {
+                Serial.println("test1");
+                setStateMachine(BATTLE_SELECTION, ENTRY);
+                Serial.println("test2");
+            }
+            else if (m_flag_btnB_is_pressed == true) {
+                Serial.println("test3");
+                setStateMachine(MENU, ENTRY);
+                Serial.println("test4");
+            }
+            else if (m_flag_btnC_is_pressed == true) {
+                Serial.println("test5");
+                setStateMachine(BATTLE_RECORD, ENTRY);
+                Serial.println("test6");
+            }
+
+            setBtnAllFlgFalse();
+            break;
+
+            case EXIT:
+            Serial.println("BATTLE_TITLE EXIT");
+            break;
+
+            default:
+                break;
+             }
+            break;
+/*------------------------------------------------------------------------------*/
+        case BATTLE_SELECTION:
+            switch (getAction()) {
+             case ENTRY:
+            Serial.println("BATTLE_SELECTION ENTRY");
+            displayHigh_low_select();
+            setStateMachine(BATTLE_SELECTION, DO);
+            break;
+
+            case DO:
+            Serial.println("BATTLE_SELECTION DO");
+            if (m_flag_btnA_is_pressed == true) {
+                Serial.println("test7");
+                userSelect = true; // ユーザーが HIGH を選択したことを示す処理
+                getHigh_lose_win(userSelect);
+                setStateMachine(BATTLE_RESULT, ENTRY);
+                Serial.println("test8");
+            }
+            else if (m_flag_btnC_is_pressed == true) {
+                Serial.println("test9");
+                userSelect = false; // ユーザーが LOW を選択したことを示す処理
+                getHigh_lose_win(userSelect);
+                setStateMachine(BATTLE_RESULT, ENTRY);
+                Serial.println("test10");
+            }
+            setBtnAllFlgFalse();
+            break;
+
+            case EXIT:
+            Serial.println("BATTLE_SELECTION EXIT");
+            break;
+
+            default:
+                break;
+            }
+             break;
+/*---------------------------------------------------------------------------------------*/
+        case BATTLE_RESULT:
+            switch (getAction()) {
+            case ENTRY:
+            Serial.println("BATTLE_RESULT ENTRY");
+            displayHigh_low_result();
+            setStateMachine(BATTLE_RESULT, DO);
+            break;
+
+            case DO:
+            Serial.println("BATTLE_RESULT DO");
+            if (m_flag_btnA_is_pressed == true) {
+                Serial.println("test1");
+                setStateMachine(BATTLE_SELECTION, ENTRY);
+                Serial.println("test2");
+            }
+            else if (m_flag_btnB_is_pressed == true) {
+                Serial.println("test3");
+                setStateMachine(BATTLE_TITLE, ENTRY);
+                Serial.println("test4");
+            }
+            setBtnAllFlgFalse();
+            break;
+
+            case EXIT:
+            Serial.println("BATTLE_RESULT EXIT");
+            //setStateMachine(BATTLE_RECORD, ENTRY);
+            break;
+
+            default:
+                break;
+             }
+            break;
+/*----------------------------------------------------------------*/
+        case BATTLE_RECORD:
+            switch (getAction()) {
+            case ENTRY:
+            Serial.println("BATTLE_RECORD ENTRY");
+            setStateMachine(BATTLE_RECORD, DO);
+            break;
+
+            case DO:
+            Serial.println("BATTLE_RECORD DO");
+            if (m_flag_btnB_is_pressed == true) {
+                Serial.println("test3");
+                setStateMachine(MENU, ENTRY);
+                Serial.println("test4");
+            }
+            setStateMachine(BATTLE_RECORD, EXIT);
+            break;
+
+            case EXIT:
+            Serial.println("BATTLE_RECORD EXIT");
+            break;
+
+            default:
+                break;
+            }
+            break;
+             }
         }
-    }
+
 }

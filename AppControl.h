@@ -14,6 +14,10 @@ private: // privateはクラス内からしかアクセスできない
     bool m_flag_btnA_is_pressed = false;
     bool m_flag_btnB_is_pressed = false;
     bool m_flag_btnC_is_pressed = false;
+    int leftCard;// メンバ変数としてleftCardを宣言
+    int rightCard;// メンバ変数としてrightCardを宣言
+    bool result;
+
 
     /* State Machine */
     State m_state = TITLE;
@@ -52,4 +56,11 @@ public: // publicはどこからでもアクセス可能
     void displayDateInit();
     void displayDateUpdate();
     void controlApplication();
+    void displayHigh_low_Init();
+    int getHigh_low_heart();
+    int getHigh_lose_win(bool selectbtn);
+    void displayHigh_low_select();
+    int getHigh_low_spade(); 
+    int displayHigh_low_result();
+    void displayHigh_low_record();
 };

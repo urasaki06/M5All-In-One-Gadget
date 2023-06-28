@@ -77,6 +77,35 @@
 #define COMMON_BLUEDOT_IMG_PATH "/images/common/blue_number/dot.jpg"
 #define COMMON_BLUEFILLWHITE_IMG_PATH "/images/common/blue_number/fillwhite.jpg"
 
+#define TRUMP_TITLE_IMG_PATH  "/images/trump/title.jpg"  //トランプ画像のファイルパス：タイトル画面  
+#define TRUMP_START_IMG_PATH "/images/trump/start.jpg"    //トランプ画像のファイルパス：タイトル画面の「開始」 
+#define TRUMP_RECORD_IMG_PATH "/images/trump/record.jpg"    //トランプ画像のファイルパス：タイトル画面の「戦績」 
+#define TRUMP_BACK_IMG_PATH "/images/trump/back.jpg"   //トランプ画像のファイルパス：バトル画面(選択)の「BACK」  
+#define TRUMP_HIGH_IMG_PATH "/images/trump/high.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HIGH」  
+#define TRUMP_LOW_IMG_PATH "/images/trump/low.jpg"     //トランプ画像のファイルパス：バトル画面(選択)の「LOW」 
+#define TRUMP_HIGHANDLOW_IMG_PATH "/images/trump/highandlow.jpg"    //トランプ画像のファイルパス：バトル画面(選択)の「HIGH　AND　LOW？？」  
+#define TRUMP_HEART1_IMG_PATH "/images/trump/heart/heart1.jpg" //トランプ画像のファイルパス：バトル画面(選択)の「HEART1」  
+#define TRUMP_HEART2_IMG_PATH "/images/trump/heart/heart2.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART2」  
+#define TRUMP_HEART3_IMG_PATH "/images/trump/heart/heart3.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART3」  
+#define TRUMP_HEART4_IMG_PATH "/images/trump/heart/heart4.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART4」  
+#define TRUMP_HEART5_IMG_PATH "/images/trump/heart/heart5.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART5」  
+#define TRUMP_HEART6_IMG_PATH "/images/trump/heart/heart6.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART6」  
+#define TRUMP_HEART7_IMG_PATH "/images/trump/heart/heart7.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART7」  
+#define TRUMP_HEART8_IMG_PATH "/images/trump/heart/heart8.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART8」  
+#define TRUMP_HEART9_IMG_PATH "/images/trump/heart/heart9.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「HEART9」  
+#define TRUMP_SPADE1_IMG_PATH "/images/trump/spade/spade1.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE1」  
+#define TRUMP_SPADE2_IMG_PATH "/images/trump/spade/spade2.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE2」  
+#define TRUMP_SPADE3_IMG_PATH "/images/trump/spade/spade3.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE3」  
+#define TRUMP_SPADE4_IMG_PATH "/images/trump/spade/spade4.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE4」  
+#define TRUMP_SPADE5_IMG_PATH "/images/trump/spade/spade5.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE5」  
+#define TRUMP_SPADE6_IMG_PATH "/images/trump/spade/spade6.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE6」  
+#define TRUMP_SPADE7_IMG_PATH "/images/trump/spade/spade7.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE7」  
+#define TRUMP_SPADE8_IMG_PATH "/images/trump/spade/spade8.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE8」  
+#define TRUMP_SPADE9_IMG_PATH "/images/trump/spade/spade9.jpg"  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE9」  
+#define TRUMP_ONMORE_IMG_PATH "/images/trump/onmore.jpg"  //トランプ画像のファイルパス：バトル画面(結果敗北・勝利)の「もう一回」 
+#define TRUMP_WIN_IMG_PATH "/images/trump/win.jpg"   //トランプ画像のファイルパス：バトル画面(結果・勝利)の「WIN」  
+#define TRUMP_LOSE_IMG_PATH "/images/trump/lose.jpg"  //トランプ画像のファイルパス：バトル画面(結果・敗北)の「LOSE」
+
 // TITLE jpg image coordinate
 #define TITLE_X_CRD 0
 #define TITLE_Y_CRD 0
@@ -169,12 +198,33 @@
 #define DATE_BACK_X_CRD 120		//時刻表示画面の「戻るボタン」画像のx座標	
 #define DATE_BACK_Y_CRD 200		//時刻表示画面の「戻るボタン」画像のy座標	
 
-
-
-
-
-
-
+// Date jpg image coordinate
+#define TRUMP_TITLE_X_CRD  0 //トランプ画像のファイルパス：タイトル画像のx座標  
+#define TRUMP_TITLE_Y_CRD  0 //トランプ画像のファイルパス：タイトル画像のｙ座標  
+#define TRUMP_START_X_CRD  0//トランプ画像のファイルパス：タイトル画面の「開始」のx座標 
+#define TRUMP_START_Y_CRD 200 //トランプ画像のファイルパス：タイトル画面の「開始」のｙ座標 
+#define TRUMP_RECORD_X_CRD 240 //トランプ画像のファイルパス：タイトル画面の「戦績」のx座標 
+#define TRUMP_RECORD_Y_CRD 200    //トランプ画像のファイルパス：タイトル画面の「戦績」のｙ座標 
+#define TRUMP_BACK_X_CRD  200  //トランプ画像のファイルパス：バトル画面(選択)の「BACK」のｘ座標  
+#define TRUMP_BACK_Y_CRD 0 //トランプ画像のファイルパス：バトル画面(選択)の「BACK」のｙ座標  
+#define TRUMP_HIGH_X_CRD 0  //トランプ画像のファイルパス：バトル画面(選択)の「HIGH」のx座標  
+#define TRUMP_HIGH_Y_CRD 200   //トランプ画像のファイルパス：バトル画面(選択)の「HIGH」のｙ座標  
+#define TRUMP_LOW_X_CRD 240   //トランプ画像のファイルパス：バトル画面(選択)の「LOW」のx座標 
+#define TRUMP_LOW_Y_CRD 200  //トランプ画像のファイルパス：バトル画面(選択)の「LOW」のｙ座標 
+#define TRUMP_HIGHANDLOW_X_CRD 20    //トランプ画像のファイルパス：バトル画面(選択)の「HIGH　AND　LOW？？」のx座標  
+#define TRUMP_HIGHANDLOW_Y_CRD 150   //トランプ画像のファイルパス：バトル画面(選択)の「HIGH　AND　LOW？？」のｙ座標  
+#define TRUMP_HEART_X_CRD 50   //トランプ画像のファイルパス：バトル画面(選択)の「HEART」のx座標  
+#define TRUMP_HEART_Y_CRD 0   //トランプ画像のファイルパス：バトル画面(選択)の「HEART」のｙ座標  
+#define TRUMP_SPADE_X_CRD 200  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE」のｘ座標  
+#define TRUMP_SPADE_Y_CRD 0  //トランプ画像のファイルパス：バトル画面(選択)の「SPADE」のｙ座標  
+#define TRUMP_ONMORE_X_CRD 0   //トランプ画像のファイルパス：バトル画面(結果敗北・勝利)の「もう一回」のｘ座標 
+#define TRUMP_ONMORE_Y_CRD 200   //トランプ画像のファイルパス：バトル画面(結果敗北・勝利)の「もう一回」のｙ座標 
+#define TRUMP_WIN_X_CRD 100  //トランプ画像のファイルパス：バトル画面(結果・勝利)の「WIN」のｘ座標  
+#define TRUMP_WIN_Y_CRD 150  //トランプ画像のファイルパス：バトル画面(結果・勝利)の「WIN」のｙ座標  
+#define TRUMP_LOSE_X_CRD 100    //トランプ画像のファイルパス：バトル画面(結果・敗北)の「LOSE」のｘ座標 
+#define TRUMP_LOSE_Y_CRD 150   //トランプ画像のファイルパス：バトル画面(結果・敗北)の「LOSE」のｙ座標 
+#define TRUMP_COMMON_BUTTON_BACK_X_CRD 120		//時刻表示画面の「戻るボタン」画像のx座標	
+#define TRUMP_COMMON_BUTTON_BACK_Y_CRD 200	
 
 typedef enum {
     TITLE,
@@ -183,7 +233,11 @@ typedef enum {
     MUSIC_STOP,
     MUSIC_PLAY,
     MEASURE,
-    DATE
+    DATE,
+    BATTLE_TITLE,
+    BATTLE_SELECTION,
+    BATTLE_RESULT,
+    BATTLE_RECORD
 } State;
 
 typedef enum {
@@ -206,3 +260,6 @@ typedef enum {
     HIGH_ALERT,
     DANGER
 } WbgtIndex;
+
+
+
